@@ -78,7 +78,7 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
             SetComponent(playerEntity, playerCharacter);
         }
         //Shooting mechanism
-        if (playerCharacter.shootingTime >= playerShootingPeriod)
+        /*if (playerCharacter.shootingTime >= playerShootingPeriod)
         {
             if(input & PlayerInput::SHOOT)
             {
@@ -93,7 +93,7 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
                 playerCharacter.shootingTime = 0.0f;
                 SetComponent(playerEntity, playerCharacter);
             }
-        }
+        }*/
     }
 }
 

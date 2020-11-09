@@ -52,12 +52,12 @@ const std::array<Color4, std::max(maxPlayerNmb, 4u)> playerColors =
     }
 };
 
-const std::array<Vec2f, std::max(4u, maxPlayerNmb)> spawnPositions
+const std::array<Vec2f, std::max(4u, maxPlayerNmb)> spawnPositions // Change position of each player connecting
 {
-        Vec2f(0,1),
-        Vec2f(0,-1),
-        Vec2f(1,0),
-        Vec2f(-1,0),
+        Vec2f(0,3), // First Client Red
+        Vec2f(0,-3), // 2nd Client Blue
+        Vec2f(1,0), // 3rd Client
+        Vec2f(-1,0), // 4th Client
 };
 
 const std::array<degree_t, std::max(4u, maxPlayerNmb)> spawnRotations{
