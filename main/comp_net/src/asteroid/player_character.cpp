@@ -51,18 +51,31 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
         const bool left = input & PlayerInput::LEFT;
         const bool up = input & PlayerInput::UP;
         const bool down = input & PlayerInput::DOWN;
+        auto dir = Vec2f::zero;
+        auto velocity = Vec2f::zero;
 
-        const auto angularVelocity = ((left ? 1.0f : 0.0f) + (right ? -1.0f : 0.0f)) * playerAngularSpeed;
+        if (right || left)
+        {
+            dir = Vec2f::right;
+            velocity = ((left ? 1.0f : 0.0f) + (right ? -1.0f : 0.0f)) * dir;
+        }
+        else if (up || down)
+        {
+            dir = Vec2f::up;
+            velocity = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;
+        }
 
-        playerBody.angularVelocity = angularVelocity;
+        // const auto angularVelocity = ((left ? 1.0f : 0.0f) + (right ? -1.0f : 0.0f)) * playerAngularSpeed;
 
-        auto dir = Vec2f::up;
-        dir = dir.Rotate(-(playerBody.rotation + playerBody.angularVelocity * dt.count()));
+        // playerBody.angularVelocity = angularVelocity;
 
-        const auto acceleration = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;
+        /*auto dir = Vec2f::up;*/
+        // dir = dir.Rotate(-(playerBody.rotation + playerBody.angularVelocity * dt.count()));
+
+       /* const auto acceleration = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;*/
 
 
-        playerBody.velocity += acceleration * dt.count();
+        playerBody.velocity = velocity; // Player velocity, changed + and *dt.count()
 
         physicsManager_.get().SetBody(playerEntity, playerBody);
 
@@ -99,9 +112,10 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
 
 PlayerCharacterManager& PlayerCharacterManager::operator=(const PlayerCharacterManager& playerCharacterManager)
 {
-    gameManager_ = playerCharacterManager.gameManager_;
+    /*gameManager_ = playerCharacterManager.gameManager_;*/
     components_ = playerCharacterManager.components_;
     //We do NOT copy the physics manager
+    // do not copy transform manager
     return *this;
 }
 }
