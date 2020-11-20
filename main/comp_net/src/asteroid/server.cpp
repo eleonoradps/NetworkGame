@@ -29,14 +29,20 @@ void Server::ReceivePacket(std::unique_ptr<asteroid::Packet> packet)
         if (lastPlayerNumber_ == asteroid::maxPlayerNmb)
         {
             auto startGamePacket = std::make_unique<asteroid::StartGamePacket>();
+            auto spawnEggPacket = std::make_unique<asteroid::SpawnEggPacket>();
             startGamePacket->packetType = asteroid::PacketType::START_GAME;
+            spawnEggPacket->packetType = asteroid::PacketType::SPAWN_EGG;
             using namespace std::chrono;
             unsigned long ms = (duration_cast<milliseconds>(
                 system_clock::now().time_since_epoch()
                 ) + milliseconds(3000)).count();
             startGamePacket->startTime = ConvertToBinary(ms);
             SendReliablePacket(std::move(startGamePacket));
+            SendReliablePacket(std::move(spawnEggPacket));
         }
+        
+        
+        
 
         break;
     }

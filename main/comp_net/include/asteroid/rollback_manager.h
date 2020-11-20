@@ -29,6 +29,7 @@
 #include "asteroid/physics_manager.h"
 #include "player_character.h"
 #include "bullet_manager.h"
+#include "egg_manager.h"
 
 namespace neko::asteroid
 {
@@ -73,6 +74,8 @@ public:
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
     void SpawnPlayer(net::PlayerNumber playerNumber, Entity entity, Vec2f position, degree_t rotation);
     void SpawnBullet(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f velocity);
+    void SpawnEgg(Entity entity, Vec2f position, Vec2f velocity);
+    //void SpawnGrid(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f scale);
     /**
      * \brief This function does not destroy the entity definitely, but puts the DESTROY flag
      */
@@ -90,9 +93,12 @@ private:
     PhysicsManager currentPhysicsManager_;
     PlayerCharacterManager currentPlayerManager_;
     BulletManager currentBulletManager_;
+    EggManager currentEggManager_;
+    //GridManager currentGridManager_; //
     PhysicsManager lastValidatePhysicsManager_;
     PlayerCharacterManager lastValidatePlayerManager_;
     BulletManager lastValidateBulletManager_;
+    EggManager lastValidateEggManager_;
 
 
     net::Frame lastValidateFrame_ = 0;

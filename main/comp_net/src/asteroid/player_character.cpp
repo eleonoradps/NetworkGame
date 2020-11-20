@@ -65,6 +65,11 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
             velocity = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;
         }
 
+        //if ((playerBody.position.y > playerCharacter.playerMaxHeight && playerBody.velocity.y > 0) || (playerBody.position.y < playerCharacter.playerMinHeight && playerBody.velocity.y < 0))
+        //{
+        //    playerBody.velocity = Vec2f::zero;
+        //}
+
         // const auto angularVelocity = ((left ? 1.0f : 0.0f) + (right ? -1.0f : 0.0f)) * playerAngularSpeed;
 
         // playerBody.angularVelocity = angularVelocity;

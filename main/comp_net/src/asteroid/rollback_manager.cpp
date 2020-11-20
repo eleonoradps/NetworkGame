@@ -38,8 +38,13 @@ RollbackManager::RollbackManager(GameManager& gameManager, EntityManager& entity
     currentTransformManager_(entityManager),
     currentPhysicsManager_(entityManager), currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_),
     currentBulletManager_(entityManager, gameManager),
+    currentEggManager_(entityManager, gameManager),
+    //currentGridManager_(entityManager, gameManager), //
     lastValidatePhysicsManager_(entityManager),
-    lastValidatePlayerManager_(entityManager, lastValidatePhysicsManager_, gameManager_), lastValidateBulletManager_(entityManager, gameManager)
+    lastValidatePlayerManager_(entityManager,
+    lastValidatePhysicsManager_, gameManager_),
+    lastValidateBulletManager_(entityManager, gameManager),
+    lastValidateEggManager_(entityManager,gameManager)
 {
     for (auto& input : inputs_)
     {
@@ -76,6 +81,7 @@ void RollbackManager::SimulateToCurrentFrame()
     createdEntities_.clear();
     //Revert the current game state to the last validated game state
     currentBulletManager_ = lastValidateBulletManager_;
+    currentEggManager_ = lastValidateEggManager_;
     currentPhysicsManager_ = lastValidatePhysicsManager_;
     currentPlayerManager_ = lastValidatePlayerManager_;
 
@@ -93,6 +99,7 @@ void RollbackManager::SimulateToCurrentFrame()
         }
         //Simulate one frame of the game
         currentBulletManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
+        currentEggManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
         currentPlayerManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
         currentPhysicsManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
     }
@@ -188,6 +195,7 @@ void RollbackManager::ValidateFrame(net::Frame newValidateFrame)
     }
     //We use the current game state as the temporary new validate game state
     currentBulletManager_ = lastValidateBulletManager_;
+    currentEggManager_ = lastValidateEggManager_;
     currentPhysicsManager_ = lastValidatePhysicsManager_;
     currentPlayerManager_ = lastValidatePlayerManager_;
 
@@ -206,6 +214,7 @@ void RollbackManager::ValidateFrame(net::Frame newValidateFrame)
         }
         //We simulate one frame
         currentBulletManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
+        currentEggManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
         currentPlayerManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
         currentPhysicsManager_.FixedUpdate(seconds(GameManager::FixedPeriod));
     }
@@ -219,6 +228,7 @@ void RollbackManager::ValidateFrame(net::Frame newValidateFrame)
     }
     //Copy back the new validate game state to the last validated game state
     lastValidateBulletManager_ = currentBulletManager_;
+    lastValidateEggManager_ = currentEggManager_;
     lastValidatePlayerManager_ = currentPlayerManager_;
     lastValidatePhysicsManager_ = currentPhysicsManager_;
     lastValidateFrame_ = newValidateFrame;
@@ -303,8 +313,21 @@ void RollbackManager::SpawnPlayer(net::PlayerNumber playerNumber, Entity entity,
 
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, position);
-    currentTransformManager_.SetRotation(entity, rotation);
+    currentTransformManager_.SetRotation(entity, rotation); // vec2f player scalex scaley
 }
+
+//void RollbackManager::SpawnGrid(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f scale)
+//{
+//    Body gridBody;
+//    gridBody.position = position;
+//    Box gridBox;
+//    gridBox.extends = Vec2f::one * 0.5f;
+//
+//    Grid grid;
+//
+//    currentGridManager_.AddComponent(entity);//
+//    currentGridManager_.SetComponent(entity, grid);//
+//}
 
 net::PlayerInput RollbackManager::GetInputAtFrame(net::PlayerNumber playerNumber, net::Frame frame)
 {
@@ -315,7 +338,7 @@ net::PlayerInput RollbackManager::GetInputAtFrame(net::PlayerNumber playerNumber
 
 void RollbackManager::OnCollision(Entity entity1, Entity entity2)
 {
-    std::function<void(const PlayerCharacter&, Entity, const Bullet&, Entity)> ManageCollision =
+    std::function<void(const PlayerCharacter&, Entity, const Bullet&, Entity)> ManageCollision = // function for collision
         [this](const auto& player, auto playerEntity, const auto& bullet, auto bulletEntity)
     {
         if (player.playerNumber != bullet.playerNumber)
@@ -325,14 +348,14 @@ void RollbackManager::OnCollision(Entity entity1, Entity entity2)
             auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
             if (playerCharacter.invincibilityTime <= 0.0f)
             {
-                playerCharacter.health--;
+                playerCharacter.health--; // look for health
                 playerCharacter.invincibilityTime = playerInvincibilityPeriod;
             }
             currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
         }
     };
     if (entityManager_.HasComponent(entity1, EntityMask(ComponentType::PLAYER_CHARACTER)) &&
-        entityManager_.HasComponent(entity2, EntityMask(ComponentType::BULLET)))
+        entityManager_.HasComponent(entity2, EntityMask(ComponentType::BULLET))) // if player in contact with bullet
     {
         const auto& player = currentPlayerManager_.GetComponent(entity1);
         const auto& bullet = currentBulletManager_.GetComponent(entity2);
@@ -372,6 +395,38 @@ void RollbackManager::SpawnBullet(net::PlayerNumber playerNumber, Entity entity,
     currentTransformManager_.SetRotation(entity, degree_t(0.0f));
     currentTransformManager_.UpdateDirtyComponent(entity);
 }
+
+void RollbackManager::SpawnEgg(Entity entity, Vec2f position, Vec2f velocity)
+{
+    createdEntities_.push_back({ entity, testedFrame_ });
+
+    Body eggBody;
+    eggBody.position = position;
+    eggBody.velocity = velocity;
+    Box eggBox;
+    eggBox.extends = Vec2f::one * eggScale * 0.5f;
+
+    currentEggManager_.AddComponent(entity);
+
+    currentPhysicsManager_.AddBody(entity);
+    currentPhysicsManager_.SetBody(entity, eggBody);
+    currentPhysicsManager_.AddBox(entity);
+    currentPhysicsManager_.SetBox(entity, eggBox);
+
+    lastValidateEggManager_.AddComponent(entity);
+
+    lastValidatePhysicsManager_.AddBody(entity);
+    lastValidatePhysicsManager_.SetBody(entity, eggBody);
+    lastValidatePhysicsManager_.AddBox(entity);
+    lastValidatePhysicsManager_.SetBox(entity, eggBox);
+
+    currentTransformManager_.AddComponent(entity);
+    currentTransformManager_.SetPosition(entity, position);
+    currentTransformManager_.SetScale(entity, Vec2f::one * eggScale);
+    currentTransformManager_.SetRotation(entity, degree_t(0.0f));
+}
+
+
 
 void RollbackManager::DestroyEntity(Entity entity)
 {

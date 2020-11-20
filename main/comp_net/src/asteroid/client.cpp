@@ -33,6 +33,13 @@ void Client::ReceivePacket(const asteroid::Packet* packet)
         gameManager_.StartGame(startingTime);
         break;
     }
+    /*case asteroid::PacketType::SPAWN_GRID:
+    {
+        const auto* spawnGridPacket = static_cast<const asteroid::SpawnGridPacket*>(packet);
+
+        const auto pos = ConvertFromBinary<Vec2f>(spawnGridPacket->pos);
+        const auto scale = ConvertFromBinary<Vec2f>(spawnGridPacket->scale);
+    }*/
     case asteroid::PacketType::INPUT:
     {
         const auto* playerInputPacket = static_cast<const asteroid::PlayerInputPacket*>(packet);
@@ -99,6 +106,19 @@ void Client::ReceivePacket(const asteroid::Packet* packet)
     {
         const auto* winGamePacket = static_cast<const asteroid::WinGamePacket*>(packet);
         gameManager_.WinGame(winGamePacket->winner);
+        break;
+    }
+    case asteroid::PacketType::SPAWN_EGG:
+    {
+        const auto* spawnEggPacket = static_cast<const asteroid::SpawnEggPacket*>(packet);
+
+        const auto pos = ConvertFromBinary<Vec2f>(spawnEggPacket->pos);
+        const auto velocity = ConvertFromBinary<Vec2f>(spawnEggPacket->velocity);
+
+        gameManager_.SpawnEgg(pos, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::left, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::right, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::right * 2.0f, velocity);
         break;
     }
     case asteroid::PacketType::SPAWN_BULLET: break;

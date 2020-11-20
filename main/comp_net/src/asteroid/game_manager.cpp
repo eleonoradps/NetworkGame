@@ -66,6 +66,7 @@ void GameManager::SpawnPlayer(net::PlayerNumber playerNumber, Vec2f position, de
     transformManager_.AddComponent(entity);
     transformManager_.SetPosition(entity, position);
     transformManager_.SetRotation(entity, rotation);
+    transformManager_.SetScale(entity, Vec2f(gridScaleX, gridScaleY)); // Player scale
     rollbackManager_.SpawnPlayer(playerNumber, entity, position, degree_t(rotation));
 }
 
@@ -74,6 +75,16 @@ Entity GameManager::GetEntityFromPlayerNumber(net::PlayerNumber playerNumber) co
     return entityMap_[playerNumber];
 }
 
+//Entity GameManager::SpawnGrid(net::PlayerNumber playerNumber, Vec2f position, Vec2f scale)
+//{
+//    const Entity entity = entityManager_.CreateEntity();
+//    transformManager_.AddComponent(entity);
+//    transformManager_.SetPosition(entity, position);
+//    transformManager_.SetScale(entity, Vec2f(gridScaleX, gridScaleY));
+//    transformManager_.UpdateDirtyComponent(entity);
+//    //rollbackManager_.SpawnGrid(playerNumber, entity, position, scale);
+//    return entity;
+//}
 
 void GameManager::SetPlayerInput(net::PlayerNumber playerNumber, net::PlayerInput playerInput, std::uint32_t inputFrame)
 {
@@ -105,6 +116,18 @@ Entity GameManager::SpawnBullet(net::PlayerNumber playerNumber, Vec2f position, 
     transformManager_.SetRotation(entity, degree_t(0.0f));
     transformManager_.UpdateDirtyComponent(entity);
     rollbackManager_.SpawnBullet(playerNumber, entity, position, velocity);
+    return entity;
+}
+
+Entity GameManager::SpawnEgg(Vec2f position, Vec2f velocity)
+{
+    const Entity entity = entityManager_.CreateEntity();
+    entityManager_.AddComponentType(entity, static_cast<EntityMask>(ComponentType::EGG));
+    transformManager_.AddComponent(entity);
+    transformManager_.SetPosition(entity, position);
+    transformManager_.SetScale(entity, Vec2f::one * eggScale);
+    transformManager_.UpdateDirtyComponent(entity);
+    rollbackManager_.SpawnEgg(entity, position, velocity);
     return entity;
 }
 
@@ -310,7 +333,7 @@ void ClientGameManager::SpawnPlayer(net::PlayerNumber playerNumber, Vec2f positi
     spriteManager_.SetComponent(entity, sprite);
 
 }
-
+ 
 Entity ClientGameManager::SpawnBullet(net::PlayerNumber playerNumber, Vec2f position, Vec2f velocity)
 {
     const auto entity = GameManager::SpawnBullet(playerNumber, position, velocity);
@@ -326,6 +349,37 @@ Entity ClientGameManager::SpawnBullet(net::PlayerNumber playerNumber, Vec2f posi
     spriteManager_.SetComponent(entity, sprite);
     return entity;
 }
+
+Entity ClientGameManager::SpawnEgg(Vec2f position, Vec2f velocity)
+{
+    const auto entity = GameManager::SpawnEgg(position, velocity);
+    const auto& config = BasicEngine::GetInstance()->config;
+    if (eggTextureId_ == INVALID_TEXTURE_ID)
+    {
+        eggTextureId_ = textureManager_.LoadTexture(config.dataRootPath + "sprites/asteroid/egg.png");
+    }
+
+    spriteManager_.AddComponent(entity);
+    spriteManager_.SetTexture(entity, eggTextureId_);
+    auto sprite = spriteManager_.GetComponent(entity);
+    spriteManager_.SetComponent(entity, sprite);
+    return entity;
+}
+//Entity ClientGameManager::SpawnGrid(net::PlayerNumber playerNumber, Vec2f position, Vec2f scale)
+//{
+//    const auto entity = GameManager::SpawnGrid(playerNumber, position, scale);
+//    const auto& config = BasicEngine::GetInstance()->config;
+//    if (gridTextureId_ == INVALID_TEXTURE_ID)
+//    {
+//        gridTextureId_ = textureManager_.LoadTexture(config.dataRootPath + "sprites/asteroid/gridnetwork.png");
+//    }
+//    spriteManager_.AddComponent(entity);
+//    spriteManager_.SetTexture(entity, gridTextureId_);
+//    auto sprite = spriteManager_.GetComponent(entity);
+//    sprite.color = playerColors[playerNumber];
+//    spriteManager_.SetComponent(entity, sprite);
+//    return entity;
+//}
 
 
 void ClientGameManager::FixedUpdate()
@@ -344,6 +398,7 @@ void ClientGameManager::FixedUpdate()
             if (ms > startingTime_)
             {
                 state_ = state_ | STARTED;
+                //SpawnEgg(Vec2f(0, 0), Vec2f(1.0f, 1.0f));
             }
             else
             {
