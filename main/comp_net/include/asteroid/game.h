@@ -39,7 +39,7 @@ const float playerShootingPeriod = 0.3f;
 const float bulletSpeed = 2.0f;
 const float bulletScale = 0.2f;
 const float bulletPeriod = 3.0f;
-const float eggScale = 5.0f;
+const float eggScale = 2.0f;
 const float gridScaleX = 5.0f;
 const float gridScaleY = 5.0f;
 const float playerInvincibilityPeriod = 1.5f;
@@ -74,7 +74,6 @@ enum class ComponentType : EntityMask
 {
     PLAYER_CHARACTER = static_cast<EntityMask>(neko::ComponentType::OTHER_TYPE),
     BULLET = static_cast<EntityMask>(neko::ComponentType::OTHER_TYPE) << 1u,
-    //GRID = static_cast<EntityMask>(neko::ComponentType::OTHER_TYPE),
     ASTEROID = static_cast<EntityMask>(neko::ComponentType::OTHER_TYPE) << 2u,
     PLAYER_INPUT = static_cast<EntityMask>(neko::ComponentType::OTHER_TYPE) << 3u,
     DESTROYED = static_cast<EntityMask>(neko::ComponentType::OTHER_TYPE) << 4u,

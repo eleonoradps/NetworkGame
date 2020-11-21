@@ -75,17 +75,6 @@ Entity GameManager::GetEntityFromPlayerNumber(net::PlayerNumber playerNumber) co
     return entityMap_[playerNumber];
 }
 
-//Entity GameManager::SpawnGrid(net::PlayerNumber playerNumber, Vec2f position, Vec2f scale)
-//{
-//    const Entity entity = entityManager_.CreateEntity();
-//    transformManager_.AddComponent(entity);
-//    transformManager_.SetPosition(entity, position);
-//    transformManager_.SetScale(entity, Vec2f(gridScaleX, gridScaleY));
-//    transformManager_.UpdateDirtyComponent(entity);
-//    //rollbackManager_.SpawnGrid(playerNumber, entity, position, scale);
-//    return entity;
-//}
-
 void GameManager::SetPlayerInput(net::PlayerNumber playerNumber, net::PlayerInput playerInput, std::uint32_t inputFrame)
 {
     if (playerNumber == net::INVALID_PLAYER)
@@ -365,22 +354,6 @@ Entity ClientGameManager::SpawnEgg(Vec2f position, Vec2f velocity)
     spriteManager_.SetComponent(entity, sprite);
     return entity;
 }
-//Entity ClientGameManager::SpawnGrid(net::PlayerNumber playerNumber, Vec2f position, Vec2f scale)
-//{
-//    const auto entity = GameManager::SpawnGrid(playerNumber, position, scale);
-//    const auto& config = BasicEngine::GetInstance()->config;
-//    if (gridTextureId_ == INVALID_TEXTURE_ID)
-//    {
-//        gridTextureId_ = textureManager_.LoadTexture(config.dataRootPath + "sprites/asteroid/gridnetwork.png");
-//    }
-//    spriteManager_.AddComponent(entity);
-//    spriteManager_.SetTexture(entity, gridTextureId_);
-//    auto sprite = spriteManager_.GetComponent(entity);
-//    sprite.color = playerColors[playerNumber];
-//    spriteManager_.SetComponent(entity, sprite);
-//    return entity;
-//}
-
 
 void ClientGameManager::FixedUpdate()
 {

@@ -53,6 +53,7 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
         const bool down = input & PlayerInput::DOWN;
         auto dir = Vec2f::zero;
         auto velocity = Vec2f::zero;
+        float playerSpeed = 4.0f;
 
         if (right || left)
         {
@@ -80,7 +81,7 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
        /* const auto acceleration = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;*/
 
 
-        playerBody.velocity = velocity; // Player velocity, changed + and *dt.count()
+        playerBody.velocity = velocity * playerSpeed; // Player velocity 
 
         physicsManager_.get().SetBody(playerEntity, playerBody);
 

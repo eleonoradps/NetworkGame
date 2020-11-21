@@ -116,9 +116,10 @@ void Client::ReceivePacket(const asteroid::Packet* packet)
         const auto velocity = ConvertFromBinary<Vec2f>(spawnEggPacket->velocity);
 
         gameManager_.SpawnEgg(pos, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::left, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::right, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::right * 2.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::left * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::right * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::up * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::down * 5.0f, velocity);
         break;
     }
     case asteroid::PacketType::SPAWN_BULLET: break;
