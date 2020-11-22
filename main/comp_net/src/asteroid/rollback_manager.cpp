@@ -338,37 +338,72 @@ net::PlayerInput RollbackManager::GetInputAtFrame(net::PlayerNumber playerNumber
 
 void RollbackManager::OnCollision(Entity entity1, Entity entity2)
 {
-    std::function<void(const PlayerCharacter&, Entity, const Bullet&, Entity)> ManageCollision = // function for collision
-        [this](const auto& player, auto playerEntity, const auto& bullet, auto bulletEntity)
+    std::function<void(const PlayerCharacter&, Entity, const Egg&, Entity)> ManageCollision =
+        [this](const auto& player, auto playerEntity, const auto& egg, auto eggEntity)
     {
-        if (player.playerNumber != bullet.playerNumber)
+        if (player.playerNumber != egg.playerNumber)
         {
-            gameManager_.DestroyBullet(bulletEntity);
-            //lower health point
+            gameManager_.DestroyEgg(eggEntity);
+            // get score for egg
             auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
             if (playerCharacter.invincibilityTime <= 0.0f)
             {
-                playerCharacter.health--; // look for health
+                playerCharacter.score++;
                 playerCharacter.invincibilityTime = playerInvincibilityPeriod;
             }
             currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
         }
     };
+
     if (entityManager_.HasComponent(entity1, EntityMask(ComponentType::PLAYER_CHARACTER)) &&
-        entityManager_.HasComponent(entity2, EntityMask(ComponentType::BULLET))) // if player in contact with bullet
+        entityManager_.HasComponent(entity2, EntityMask(ComponentType::EGG)))
     {
         const auto& player = currentPlayerManager_.GetComponent(entity1);
-        const auto& bullet = currentBulletManager_.GetComponent(entity2);
-        ManageCollision(player, entity1, bullet, entity2);
-
+        const auto& egg = currentEggManager_.GetComponent(entity2);
+        ManageCollision(player, entity1, egg, entity2);
     }
-    if (entityManager_.HasComponent(entity2, EntityMask(ComponentType::PLAYER_CHARACTER)) &&
+
+    if(entityManager_.HasComponent(entity2, EntityMask(ComponentType::PLAYER_CHARACTER)) &&
+       entityManager_.HasComponent(entity1, EntityMask(ComponentType::EGG)))
+    {
+        const auto& player = currentPlayerManager_.GetComponent(entity2);
+        const auto& egg = currentEggManager_.GetComponent(entity1);
+        ManageCollision(player, entity2, egg, entity1);
+    }
+    
+    //std::function<void(const PlayerCharacter&, Entity, const Bullet&, Entity)> ManageCollision = // function for collision
+    //    [this](const auto& player, auto playerEntity, const auto& bullet, auto bulletEntity)
+    //{
+    //    if (player.playerNumber != bullet.playerNumber)
+    //    {
+    //        gameManager_.DestroyBullet(bulletEntity);
+    //        //lower health point
+    //        auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
+    //        if (playerCharacter.invincibilityTime <= 0.0f)
+    //        {
+    //            playerCharacter.health--; // look for health
+    //            playerCharacter.invincibilityTime = playerInvincibilityPeriod;
+    //        }
+    //        currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
+    //    }
+    //};
+    //if (entityManager_.HasComponent(entity1, EntityMask(ComponentType::PLAYER_CHARACTER)) &&
+    //    entityManager_.HasComponent(entity2, EntityMask(ComponentType::BULLET))) // if player in contact with bullet
+    //{
+    //    const auto& player = currentPlayerManager_.GetComponent(entity1);
+    //    const auto& bullet = currentBulletManager_.GetComponent(entity2);
+    //    ManageCollision(player, entity1, bullet, entity2);
+
+    //}
+    /*if (entityManager_.HasComponent(entity2, EntityMask(ComponentType::PLAYER_CHARACTER)) &&
         entityManager_.HasComponent(entity1, EntityMask(ComponentType::BULLET)))
     {
         const auto& player = currentPlayerManager_.GetComponent(entity2);
         const auto& bullet = currentBulletManager_.GetComponent(entity1);
         ManageCollision(player, entity2, bullet, entity1);
-    }
+    }*/
+
+   
 }
 
 void RollbackManager::SpawnBullet(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f velocity)

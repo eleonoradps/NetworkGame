@@ -51,6 +51,7 @@ public:
 	virtual Entity SpawnEgg(Vec2f position, Vec2f velocity);
 	//virtual Entity SpawnGrid(net::PlayerNumber, Vec2f position, Vec2f scale);
 	virtual void DestroyBullet(Entity entity);
+	virtual void DestroyEgg(Entity entity);
 	[[nodiscard]] Entity GetEntityFromPlayerNumber(net::PlayerNumber playerNumber) const;
 	[[nodiscard]] net::Frame GetCurrentFrame() const { return currentFrame_; }
 	[[nodiscard]] net::Frame GetLastValidateFrame() const { return rollbackManager_.GetLastValidateFrame(); }

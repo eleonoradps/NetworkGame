@@ -125,9 +125,14 @@ void GameManager::DestroyBullet(Entity entity)
     rollbackManager_.DestroyEntity(entity);
 }
 
+void GameManager::DestroyEgg(Entity entity)
+{
+    rollbackManager_.DestroyEntity(entity);
+}
+
 net::PlayerNumber GameManager::CheckWinner() const
 {
-    int alivePlayer = 0;
+    /*int alivePlayer = 0;
     net::PlayerNumber winner = net::INVALID_PLAYER;
     const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
     for(Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -142,7 +147,24 @@ net::PlayerNumber GameManager::CheckWinner() const
         }
     }
 
-    return alivePlayer == 1 ? winner : net::INVALID_PLAYER;
+    return alivePlayer == 1 ? winner : net::INVALID_PLAYER;*/
+
+    int playerEggs = 5;
+    net::PlayerNumber winner = net::INVALID_PLAYER;
+    const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
+    for (Entity entity = 5; entity < entityManager_.GetEntitiesSize(); entity++)
+    {
+        if (!entityManager_.HasComponent(entity, EntityMask(ComponentType::PLAYER_CHARACTER)))
+            continue;
+        const auto& player = playerManager.GetComponent(entity);
+        if (player.score >= 5)
+        {
+            playerEggs++;
+            winner = player.playerNumber;
+        }
+    }
+
+    return playerEggs == 1 ? winner : net::INVALID_PLAYER;
 }
 
 void GameManager::WinGame(net::PlayerNumber winner)
@@ -264,14 +286,14 @@ void ClientGameManager::Update(seconds dt)
     }
     else
     {
-        std::string health;
+        std::string score;
         const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
         for(net::PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
         {
             const auto playerEntity = GetEntityFromPlayerNumber(playerNumber);
-            health += fmt::format("P{} health: {} ",playerNumber+1,playerManager.GetComponent(playerEntity).health);
+            score += fmt::format("P{} score: {} ",playerNumber+1,playerManager.GetComponent(playerEntity).score);
         }
-        fontManager_.RenderText(fontId_, health, Vec2f(0.0f, -40.0f), TextAnchor::TOP_LEFT, 0.75f, Color4(Color::white, 1.0f));
+        fontManager_.RenderText(fontId_, score, Vec2f(0.0f, -40.0f), TextAnchor::TOP_LEFT, 0.75f, Color4(Color::white, 1.0f));
     }
     textureManager_.Update(dt);
     spriteManager_.Update(dt);
