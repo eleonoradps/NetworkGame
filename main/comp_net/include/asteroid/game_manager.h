@@ -132,7 +132,7 @@ protected:
     unsigned long long startingTime_ = 0;
 	std::uint32_t state_ = 0;
 
-    TextureId shipTextureId_ = INVALID_TEXTURE_ID;
+    TextureId turtleTextureId_ = INVALID_TEXTURE_ID;
     TextureId bulletTextureId_ = INVALID_TEXTURE_ID;
 	TextureId eggTextureId_ = INVALID_TEXTURE_ID;
 	TextureId gridTextureId_ = INVALID_TEXTURE_ID;

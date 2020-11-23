@@ -341,17 +341,17 @@ void RollbackManager::OnCollision(Entity entity1, Entity entity2)
     std::function<void(const PlayerCharacter&, Entity, const Egg&, Entity)> ManageCollision =
         [this](const auto& player, auto playerEntity, const auto& egg, auto eggEntity)
     {
-        if (player.playerNumber != egg.playerNumber)
+        if (!entityManager_.HasComponent(eggEntity, static_cast<EntityMask>(ComponentType::DESTROYED)))
         {
             gameManager_.DestroyEgg(eggEntity);
+            /*auto eggManager = currentEggManager_.GetComponent(eggEntity);
+            eggManager.isActive = false;
+            currentEggManager_.SetComponent(eggEntity, eggManager);*/
             // get score for egg
             auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
-            if (playerCharacter.invincibilityTime <= 0.0f)
-            {
-                playerCharacter.score++;
-                playerCharacter.invincibilityTime = playerInvincibilityPeriod;
-            }
+            playerCharacter.score++;
             currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
+
         }
     };
 

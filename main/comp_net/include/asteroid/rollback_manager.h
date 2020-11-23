@@ -72,6 +72,7 @@ public:
     [[nodiscard]] net::Frame GetCurrentFrame() const { return currentFrame_; }
     [[nodiscard]] const Transform2dManager& GetTransformManager() const { return currentTransformManager_; }
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
+    [[nodiscard]] const EggManager& GetEggManager() const { return currentEggManager_; }
     void SpawnPlayer(net::PlayerNumber playerNumber, Entity entity, Vec2f position, degree_t rotation);
     void SpawnBullet(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f velocity);
     void SpawnEgg(Entity entity, Vec2f position, Vec2f velocity);

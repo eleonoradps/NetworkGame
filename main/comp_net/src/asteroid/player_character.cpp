@@ -47,6 +47,7 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
         auto playerCharacter = GetComponent(playerEntity);
         const auto input = playerCharacter.input;
 
+
         const bool right = input & PlayerInput::RIGHT;
         const bool left = input & PlayerInput::LEFT;
         const bool up = input & PlayerInput::UP;
@@ -66,11 +67,18 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
             velocity = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;
         }
 
-        //if ((playerBody.position.y > playerCharacter.playerMaxHeight && playerBody.velocity.y > 0) || (playerBody.position.y < playerCharacter.playerMinHeight && playerBody.velocity.y < 0))
-        //{
-        //    playerBody.velocity = Vec2f::zero;
-        //}
+        playerBody.velocity = velocity * playerSpeed; // Player velocity
 
+        if ((playerBody.position.x > playerCharacter.playerMaxScreenWidth && playerBody.velocity.x > 0) || // playerBody.velocity > 0 ?
+            (playerBody.position.x < playerCharacter.playerMinScreenWidth && playerBody.velocity.x < 0))
+        {
+            playerBody.velocity = Vec2f::zero;
+        }
+        if ((playerBody.position.y > playerCharacter.playerMaxScreenHeight && playerBody.velocity.y > 0) ||
+            (playerBody.position.y < playerCharacter.playerMinScreenHeight && playerBody.velocity.y < 0))
+        {
+            playerBody.velocity = Vec2f::zero;
+        }
         // const auto angularVelocity = ((left ? 1.0f : 0.0f) + (right ? -1.0f : 0.0f)) * playerAngularSpeed;
 
         // playerBody.angularVelocity = angularVelocity;
@@ -81,7 +89,7 @@ void PlayerCharacterManager::FixedUpdate(seconds dt)
        /* const auto acceleration = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;*/
 
 
-        playerBody.velocity = velocity * playerSpeed; // Player velocity 
+        
 
         physicsManager_.get().SetBody(playerEntity, playerBody);
 

@@ -26,6 +26,7 @@
 #include "engine/component.h"
 #include "asteroid/game.h"
 #include "asteroid/physics_manager.h"
+#include "asteroid/egg_manager.h"
 
 namespace neko::asteroid
 {
@@ -38,6 +39,10 @@ struct PlayerCharacter
     short health = playerHealth;
     short score = playerScore;
     float invincibilityTime = 0.0f;
+    float playerMaxScreenHeight = 8.0f; // can't go out of screen
+    float playerMinScreenHeight = -8.0f;
+    float playerMaxScreenWidth = 8.0f;
+    float playerMinScreenWidth = -8.0f;
 };
 class GameManager;
 class PlayerCharacterManager : public ComponentManager<PlayerCharacter, EntityMask(ComponentType::PLAYER_CHARACTER)>

@@ -132,6 +132,39 @@ void GameManager::DestroyEgg(Entity entity)
 
 net::PlayerNumber GameManager::CheckWinner() const
 {
+    int remainingEggs = 0;
+    net::PlayerNumber winner = net::INVALID_PLAYER;
+
+    for (Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++) // Check all entities
+    {
+        if (!entityManager_.HasComponent(entity, EntityMask(ComponentType::EGG))) // If entity not egg,
+            continue; // Keep looking
+        remainingEggs++; // Count eggs 
+    };
+    
+    if (remainingEggs == 0)
+    {
+        int playerScore = 0; // Save score from other player
+        const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
+        for (Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++) // Loop to check both players score
+        {
+            if (!entityManager_.HasComponent(entity, EntityMask(ComponentType::PLAYER_CHARACTER)))
+                continue;
+            const auto& player = playerManager.GetComponent(entity);
+            if (player.score > playerScore) // Save score
+            {
+                playerScore = player.score; // Check if score is superior
+                winner = player.playerNumber; // Player here currently has highest score
+            }
+        }
+        return winner;
+    }
+    else
+    {
+        return net::INVALID_PLAYER;
+    }
+
+
     /*int alivePlayer = 0;
     net::PlayerNumber winner = net::INVALID_PLAYER;
     const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
@@ -149,22 +182,22 @@ net::PlayerNumber GameManager::CheckWinner() const
 
     return alivePlayer == 1 ? winner : net::INVALID_PLAYER;*/
 
-    int playerEggs = 5;
-    net::PlayerNumber winner = net::INVALID_PLAYER;
-    const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
-    for (Entity entity = 5; entity < entityManager_.GetEntitiesSize(); entity++)
-    {
-        if (!entityManager_.HasComponent(entity, EntityMask(ComponentType::PLAYER_CHARACTER)))
-            continue;
-        const auto& player = playerManager.GetComponent(entity);
-        if (player.score >= 5)
-        {
-            playerEggs++;
-            winner = player.playerNumber;
-        }
-    }
+    //int playerScore = 0;
+    //net::PlayerNumber winner = net::INVALID_PLAYER;
+    //const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
+    //for (Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
+    //{
+    //    if (!entityManager_.HasComponent(entity, EntityMask(ComponentType::PLAYER_CHARACTER)))
+    //        continue;
+    //    const auto& player = playerManager.GetComponent(entity);
+    //    if (player.score >= 4)
+    //    {
+    //        //playerScore++;
+    //        winner = player.playerNumber;
+    //    }
+    //}
 
-    return playerEggs == 1 ? winner : net::INVALID_PLAYER;
+    //return playerScore == 1 ? winner : net::INVALID_PLAYER;
 }
 
 void GameManager::WinGame(net::PlayerNumber winner)
@@ -333,12 +366,12 @@ void ClientGameManager::SpawnPlayer(net::PlayerNumber playerNumber, Vec2f positi
     GameManager::SpawnPlayer(playerNumber, position, rotation);
     const auto entity = GetEntityFromPlayerNumber(playerNumber);
     const auto& config = BasicEngine::GetInstance()->config;
-    if (shipTextureId_ == INVALID_TEXTURE_ID)
+    if (turtleTextureId_ == INVALID_TEXTURE_ID)
     {
-        shipTextureId_ = textureManager_.LoadTexture(config.dataRootPath + "sprites/asteroid/ship.png");
+        turtleTextureId_ = textureManager_.LoadTexture(config.dataRootPath + "sprites/asteroid/turtle1.png");
     }
     spriteManager_.AddComponent(entity);
-    spriteManager_.SetTexture(entity, shipTextureId_);
+    spriteManager_.SetTexture(entity, turtleTextureId_);
     auto sprite = spriteManager_.GetComponent(entity);
     sprite.color = playerColors[playerNumber];
     spriteManager_.SetComponent(entity, sprite);

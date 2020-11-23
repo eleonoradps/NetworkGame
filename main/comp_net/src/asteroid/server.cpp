@@ -23,6 +23,7 @@ void Server::ReceivePacket(std::unique_ptr<asteroid::Packet> packet)
         logDebug("Managing Received Packet Join from: " + std::to_string(clientId));
         clientMap_[lastPlayerNumber_] = clientId;
         SpawnNewPlayer(clientId, lastPlayerNumber_);
+        
 
         lastPlayerNumber_++;
 
@@ -39,6 +40,14 @@ void Server::ReceivePacket(std::unique_ptr<asteroid::Packet> packet)
             startGamePacket->startTime = ConvertToBinary(ms);
             SendReliablePacket(std::move(startGamePacket));
             SendReliablePacket(std::move(spawnEggPacket));
+            gameManager_.SpawnEgg(Vec2f::zero, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::left * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::right * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::up * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::down * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::left * 8.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::right * 8.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::right + Vec2f::up * 2.0f, Vec2f::zero);
         }
         
         

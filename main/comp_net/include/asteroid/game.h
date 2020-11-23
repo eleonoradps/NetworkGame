@@ -34,17 +34,25 @@ namespace neko::asteroid
 const std::uint32_t maxPlayerNmb = 2;
 const short playerHealth = 5;
 const short playerScore = 0;
+const short maxEggs = 8;
+//const short playerMaxScore = 10;
+//const short playerMinScore = 0;
 const float playerSpeed = 1.0f;
 const degree_t playerAngularSpeed = degree_t(90.0f);
 const float playerShootingPeriod = 0.3f;
 const float bulletSpeed = 2.0f;
 const float bulletScale = 0.2f;
 const float bulletPeriod = 3.0f;
-const float eggScale = 2.0f;
+const float eggScale = 1.0f;
 const float gridScaleX = 5.0f;
 const float gridScaleY = 5.0f;
 const float playerInvincibilityPeriod = 1.5f;
 const float invincibilityFlashPeriod = 0.5f;
+
+//float playerMaxScreenHeight = 5.0f; // Can't go out of screen
+//float playerMinScreenHeight = -5.0f; // add const
+//float playerMaxScreenWidth = 3.0f;
+//float playerMinScreenWidth = -3.0f;
 
 const std::array<Color4, std::max(maxPlayerNmb, 4u)> playerColors =
 {

@@ -224,7 +224,6 @@ void ServerNetworkManager::SpawnNewPlayer(ClientId clientId, PlayerNumber player
     }
 }
 
-
 void ServerNetworkManager::ProcessReceivePacket(
     std::unique_ptr<asteroid::Packet> packet,
     PacketSocketSource packetSource,
