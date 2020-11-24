@@ -40,6 +40,8 @@ void Server::ReceivePacket(std::unique_ptr<asteroid::Packet> packet)
             startGamePacket->startTime = ConvertToBinary(ms);
             SendReliablePacket(std::move(startGamePacket));
             SendReliablePacket(std::move(spawnEggPacket));
+
+            // Spawning Eggs
             gameManager_.SpawnEgg(Vec2f::zero, Vec2f::zero);
             gameManager_.SpawnEgg(Vec2f::left * 5.0f, Vec2f::zero);
             gameManager_.SpawnEgg(Vec2f::right * 5.0f, Vec2f::zero);

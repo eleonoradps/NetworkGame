@@ -41,13 +41,6 @@ struct CreatedEntity
     net::Frame createdFrame = 0;
 };
 
-struct DestroyedBullet
-{
-    Bullet bullet;
-    Body body;
-    net::Frame destroyedFrame = 0;
-};
-
 class RollbackManager : public OnCollisionInterface
 {
 public:
@@ -74,9 +67,7 @@ public:
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
     [[nodiscard]] const EggManager& GetEggManager() const { return currentEggManager_; }
     void SpawnPlayer(net::PlayerNumber playerNumber, Entity entity, Vec2f position, degree_t rotation);
-    void SpawnBullet(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f velocity);
     void SpawnEgg(Entity entity, Vec2f position, Vec2f velocity);
-    //void SpawnGrid(net::PlayerNumber playerNumber, Entity entity, Vec2f position, Vec2f scale);
     /**
      * \brief This function does not destroy the entity definitely, but puts the DESTROY flag
      */
@@ -93,12 +84,9 @@ private:
     Transform2dManager currentTransformManager_;
     PhysicsManager currentPhysicsManager_;
     PlayerCharacterManager currentPlayerManager_;
-    BulletManager currentBulletManager_;
     EggManager currentEggManager_;
-    //GridManager currentGridManager_; //
     PhysicsManager lastValidatePhysicsManager_;
     PlayerCharacterManager lastValidatePlayerManager_;
-    BulletManager lastValidateBulletManager_;
     EggManager lastValidateEggManager_;
 
 

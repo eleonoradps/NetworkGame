@@ -47,10 +47,7 @@ public:
 	void Update(seconds dt) override;
 	void Destroy() override;
 	virtual void SpawnPlayer(net::PlayerNumber playerNumber, Vec2f position, degree_t rotation);
-	virtual Entity SpawnBullet(net::PlayerNumber, Vec2f position, Vec2f velocity);
 	virtual Entity SpawnEgg(Vec2f position, Vec2f velocity);
-	//virtual Entity SpawnGrid(net::PlayerNumber, Vec2f position, Vec2f scale);
-	virtual void DestroyBullet(Entity entity);
 	virtual void DestroyEgg(Entity entity);
 	[[nodiscard]] Entity GetEntityFromPlayerNumber(net::PlayerNumber playerNumber) const;
 	[[nodiscard]] net::Frame GetCurrentFrame() const { return currentFrame_; }
@@ -75,21 +72,6 @@ protected:
 	net::PlayerNumber winner_ = net::INVALID_PLAYER;
 };
 
-//struct Grid
-//{
-//
-//};
-//
-//class GridManager : public ComponentManager<Grid, static_cast<EntityMask>(ComponentType::GRID)>
-//{
-//public:
-//	explicit GridManager(EntityManager& entityManager, GameManager& gameManager); //
-//
-//private:
-//	std::reference_wrapper<GameManager> gameManager_;
-//};
-
-
 class ClientGameManager : public GameManager,
     public RenderCommandInterface, public DrawImGuiInterface
 {
@@ -110,9 +92,7 @@ public:
 	void SetClientPlayer(net::PlayerNumber clientPlayer) { clientPlayer_ = clientPlayer; }
 	[[nodiscard]] const Camera2D& GetCamera() const { return camera_; }
 	void SpawnPlayer(net::PlayerNumber playerNumber, Vec2f position, degree_t rotation) override;
-	Entity SpawnBullet(net::PlayerNumber playerNumber, Vec2f position, Vec2f velocity) override;
 	Entity SpawnEgg(Vec2f position, Vec2f velocity) override;
-	//Entity SpawnGrid(net::PlayerNumber playerNumber, Vec2f position, Vec2f scale) override;
 	void FixedUpdate();
 	void SetPlayerInput(net::PlayerNumber playerNumber, net::PlayerInput playerInput, std::uint32_t inputFrame) override;
     void DrawImGui() override;
@@ -133,7 +113,6 @@ protected:
 	std::uint32_t state_ = 0;
 
     TextureId turtleTextureId_ = INVALID_TEXTURE_ID;
-    TextureId bulletTextureId_ = INVALID_TEXTURE_ID;
 	TextureId eggTextureId_ = INVALID_TEXTURE_ID;
 	TextureId gridTextureId_ = INVALID_TEXTURE_ID;
     FontId fontId_ = INVALID_FONT_ID;

@@ -21,30 +21,3 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-
-#include "asteroid/bullet_manager.h"
-#include "asteroid/game.h"
-
-namespace neko::asteroid
-{
-BulletManager::BulletManager(EntityManager& entityManager, GameManager& gameManager) :
-    ComponentManager(entityManager), gameManager_(gameManager)
-{
-}
-
-void BulletManager::FixedUpdate(seconds dt)
-{
-    for(Entity entity = 0; entity < entityManager_.get().GetEntitiesSize(); entity++)
-    {
-        if(entityManager_.get().HasComponent(entity, EntityMask(ComponentType::BULLET)))
-        {
-            auto& bullet = components_[entity];
-            bullet.remainingTime -= dt.count();
-            if(bullet.remainingTime < 0.0f)
-            {
-                entityManager_.get().DestroyEntity(entity);
-            }
-        }
-    }
-}
-}

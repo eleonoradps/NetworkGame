@@ -38,9 +38,6 @@ enum class PacketType : std::uint8_t
     JOIN = 0u,
     SPAWN_PLAYER,
     INPUT,
-    SPAWN_BULLET,
-    //SPAWN_GRID, // Added here for grid
-    //GRID_CASE,
     SPAWN_EGG,
     VALIDATE_STATE,
     START_GAME,
@@ -246,22 +243,6 @@ inline sf::Packet& operator>>(sf::Packet& packet, SpawnEggPacket& spawnEggPacket
     return packet >> spawnEggPacket.pos >> spawnEggPacket.velocity;
 }
 
-//struct SpawnGridPacket : TypedPacket<PacketType::SPAWN_GRID>
-//{
-//    std::array<std::uint8_t, sizeof(Vec2f)>pos{};
-//    std::array<std::uint8_t, sizeof(Vec2f)>scale{};
-//};
-//
-//inline sf::Packet& operator << (sf::Packet& packet, const SpawnGridPacket& spawnGridPacket)
-//{
-//    return packet << spawnGridPacket.pos << spawnGridPacket.scale;
-//}
-//
-//inline sf::Packet& operator >> (sf::Packet& packet, SpawnGridPacket& spawnGridPacket)
-//{
-//    return packet >> spawnGridPacket.pos >> spawnGridPacket.scale;
-//}
-
 inline void GeneratePacket(sf::Packet& packet, asteroid::Packet& sendingPacket)
 {
     packet << sendingPacket;
@@ -297,12 +278,6 @@ inline void GeneratePacket(sf::Packet& packet, asteroid::Packet& sendingPacket)
         packet << packetTmp;
         break;
     }
-    /*case PacketType::SPAWN_GRID:
-    {
-        auto& packetTmp = static_cast<SpawnGridPacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }*/
     case PacketType::JOIN_ACK:
     {
         auto& packetTmp = static_cast<JoinAckPacket&>(sendingPacket);
@@ -365,13 +340,6 @@ inline std::unique_ptr<Packet> GenerateReceivedPacket(sf::Packet& packet)
         packet >> *startGamePacket;
         return startGamePacket;
     }
-    /*case PacketType::SPAWN_GRID:
-    {
-        auto spawnGridPacket = std::make_unique<SpawnGridPacket>();
-        spawnGridPacket->packetType = packetTmp.packetType;
-        packet >> *spawnGridPacket;
-        return spawnGridPacket;
-    }*/
     case PacketType::JOIN_ACK:
     {
         auto joinAckPacket = std::make_unique<JoinAckPacket>();

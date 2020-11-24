@@ -39,7 +39,7 @@ struct PlayerCharacter
     short health = playerHealth;
     short score = playerScore;
     float invincibilityTime = 0.0f;
-    float playerMaxScreenHeight = 8.0f; // can't go out of screen
+    float playerMaxScreenHeight = 8.0f; // Can't go out of screen
     float playerMinScreenHeight = -8.0f;
     float playerMaxScreenWidth = 8.0f;
     float playerMinScreenWidth = -8.0f;

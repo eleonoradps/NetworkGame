@@ -7,7 +7,7 @@ namespace neko::asteroid
 {
     struct Egg
     {
-        short score = maxEggs;
+        //short score = maxEggs;
         float remainingTime = 0.0f;
         net::PlayerNumber playerNumber = net::INVALID_PLAYER;
         bool isActive = true;

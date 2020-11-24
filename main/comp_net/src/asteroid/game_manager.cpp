@@ -95,19 +95,6 @@ void GameManager::Validate(net::Frame newValidateFrame)
     rollbackManager_.ValidateFrame(newValidateFrame);
 }
 
-Entity GameManager::SpawnBullet(net::PlayerNumber playerNumber, Vec2f position, Vec2f velocity)
-{
-    const Entity entity = entityManager_.CreateEntity();
-    entityManager_.AddComponentType(entity, static_cast<EntityMask>(ComponentType::BULLET));
-    transformManager_.AddComponent(entity);
-    transformManager_.SetPosition(entity, position);
-    transformManager_.SetScale(entity, Vec2f::one * bulletScale);
-    transformManager_.SetRotation(entity, degree_t(0.0f));
-    transformManager_.UpdateDirtyComponent(entity);
-    rollbackManager_.SpawnBullet(playerNumber, entity, position, velocity);
-    return entity;
-}
-
 Entity GameManager::SpawnEgg(Vec2f position, Vec2f velocity)
 {
     const Entity entity = entityManager_.CreateEntity();
@@ -118,11 +105,6 @@ Entity GameManager::SpawnEgg(Vec2f position, Vec2f velocity)
     transformManager_.UpdateDirtyComponent(entity);
     rollbackManager_.SpawnEgg(entity, position, velocity);
     return entity;
-}
-
-void GameManager::DestroyBullet(Entity entity)
-{
-    rollbackManager_.DestroyEntity(entity);
 }
 
 void GameManager::DestroyEgg(Entity entity)
@@ -163,41 +145,6 @@ net::PlayerNumber GameManager::CheckWinner() const
     {
         return net::INVALID_PLAYER;
     }
-
-
-    /*int alivePlayer = 0;
-    net::PlayerNumber winner = net::INVALID_PLAYER;
-    const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
-    for(Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
-    {
-        if(!entityManager_.HasComponent(entity, EntityMask(ComponentType::PLAYER_CHARACTER)))
-            continue;
-        const auto& player = playerManager.GetComponent(entity);
-        if(player.health > 0)
-        {
-            alivePlayer++;
-            winner = player.playerNumber;
-        }
-    }
-
-    return alivePlayer == 1 ? winner : net::INVALID_PLAYER;*/
-
-    //int playerScore = 0;
-    //net::PlayerNumber winner = net::INVALID_PLAYER;
-    //const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
-    //for (Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
-    //{
-    //    if (!entityManager_.HasComponent(entity, EntityMask(ComponentType::PLAYER_CHARACTER)))
-    //        continue;
-    //    const auto& player = playerManager.GetComponent(entity);
-    //    if (player.score >= 4)
-    //    {
-    //        //playerScore++;
-    //        winner = player.playerNumber;
-    //    }
-    //}
-
-    //return playerScore == 1 ? winner : net::INVALID_PLAYER;
 }
 
 void GameManager::WinGame(net::PlayerNumber winner)
@@ -377,22 +324,6 @@ void ClientGameManager::SpawnPlayer(net::PlayerNumber playerNumber, Vec2f positi
     spriteManager_.SetComponent(entity, sprite);
 
 }
- 
-Entity ClientGameManager::SpawnBullet(net::PlayerNumber playerNumber, Vec2f position, Vec2f velocity)
-{
-    const auto entity = GameManager::SpawnBullet(playerNumber, position, velocity);
-    const auto& config = BasicEngine::GetInstance()->config;
-    if (bulletTextureId_ == INVALID_TEXTURE_ID)
-    {
-        bulletTextureId_ = textureManager_.LoadTexture(config.dataRootPath + "sprites/asteroid/bullet.png");
-    }
-    spriteManager_.AddComponent(entity);
-    spriteManager_.SetTexture(entity, bulletTextureId_);
-    auto sprite = spriteManager_.GetComponent(entity);
-    sprite.color = playerColors[playerNumber];
-    spriteManager_.SetComponent(entity, sprite);
-    return entity;
-}
 
 Entity ClientGameManager::SpawnEgg(Vec2f position, Vec2f velocity)
 {
@@ -426,7 +357,6 @@ void ClientGameManager::FixedUpdate()
             if (ms > startingTime_)
             {
                 state_ = state_ | STARTED;
-                //SpawnEgg(Vec2f(0, 0), Vec2f(1.0f, 1.0f));
             }
             else
             {
