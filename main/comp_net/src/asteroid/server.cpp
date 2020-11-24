@@ -43,18 +43,14 @@ void Server::ReceivePacket(std::unique_ptr<asteroid::Packet> packet)
 
             // Spawning Eggs
             gameManager_.SpawnEgg(Vec2f::zero, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::left * 5.0f, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::right * 5.0f, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::up * 5.0f, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::down * 5.0f, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::left * 8.0f, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::right * 8.0f, Vec2f::zero);
-            gameManager_.SpawnEgg(Vec2f::right + Vec2f::up * 2.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::left * 3.0f, Vec2f::zero); gameManager_.SpawnEgg(Vec2f::left * 7.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::right * 3.0f, Vec2f::zero); gameManager_.SpawnEgg(Vec2f::right * 7.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::down * 5.0f, Vec2f::zero); gameManager_.SpawnEgg(Vec2f::up * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::up * 5.0f + Vec2f::right * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::up * 5.0f + Vec2f::left * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::down * 5.0f + Vec2f::left * 5.0f, Vec2f::zero);
+            gameManager_.SpawnEgg(Vec2f::down * 5.0f + Vec2f::right * 5.0f, Vec2f::zero);
         }
-        
-        
-        
-
         break;
     }
     case asteroid::PacketType::INPUT:

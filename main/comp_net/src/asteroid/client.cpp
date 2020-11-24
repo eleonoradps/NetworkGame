@@ -110,13 +110,13 @@ void Client::ReceivePacket(const asteroid::Packet* packet)
 
         // Spawning Eggs
         gameManager_.SpawnEgg(pos, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::left * 5.0f, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::right * 5.0f, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::up * 5.0f, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::down * 5.0f, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::left * 8.0f, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::right * 8.0f, velocity);
-        gameManager_.SpawnEgg(pos + Vec2f::right + Vec2f::up * 2.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::left * 3.0f, velocity); gameManager_.SpawnEgg(pos + Vec2f::left * 7.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::right * 3.0f, velocity); gameManager_.SpawnEgg(pos + Vec2f::right * 7.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::down * 5.0f, velocity); gameManager_.SpawnEgg(pos + Vec2f::up * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::up * 5.0f + Vec2f::right * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::up * 5.0f + Vec2f::left * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::down * 5.0f + Vec2f::left * 5.0f, velocity);
+        gameManager_.SpawnEgg(pos + Vec2f::down * 5.0f + Vec2f::right * 5.0f, velocity);
         break;
     }
     default:;
